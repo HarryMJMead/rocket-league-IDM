@@ -48,7 +48,7 @@ class RandomStateSetter(StateSetter):
 
             car.set_pos(*pos)
             car.set_rot(*rot)
-            car.boost = np.random.rand()
+            car.boost = np.random.rand()*0.3 + 0.7
 
             if np.random.rand() > 0.65:
                 random_ball_target = pos
