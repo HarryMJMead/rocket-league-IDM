@@ -22,6 +22,6 @@ class RandomEpisodes(Dataset):
 
         change = _obs[1:] - _obs[0:-1]
 
-        obs = np.concatenate((_obs[1:], change*100), 1)
+        obs = np.concatenate((_obs[1:], change*100/np.array([1, 1, 1, 5, 5, 5, 5, 5, 5, 2, 2, 2, 20, 20, 20, 2])), 1)
 
         return torch.Tensor(obs), torch.Tensor(act[1:])

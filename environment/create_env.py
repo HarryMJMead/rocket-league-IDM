@@ -11,7 +11,7 @@ ep_len_seconds = 8
 
 max_steps = int(round(ep_len_seconds * physics_ticks_per_second / tick_skip))
 
-def make():
-    return rlgym.make(spawn_opponents=True, tick_skip=tick_skip, team_size=1, game_speed = 100, 
+def make(spawn_opponents=True, game_speed=100):
+    return rlgym.make(spawn_opponents=spawn_opponents, tick_skip=tick_skip, team_size=1, game_speed = game_speed, 
         obs_builder=MinimalCarObs(), reward_fn=CustomRewardFunction(), state_setter=RandomStateSetter(), 
         action_parser=CustomAction(), terminal_conditions=[GoalScoredCondition(), TimeoutCondition(max_steps)])

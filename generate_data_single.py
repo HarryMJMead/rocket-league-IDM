@@ -5,7 +5,7 @@ import csv
 import environment.create_env as rlenv
 from models.sequence import Sequence
 
-env = rlenv.make()
+env = rlenv.make(spawn_opponents=False, game_speed=1)
 
 def generate_action(on_ground, jump_threshold):
     continuous_action = np.random.rand(5)*2 - 1
@@ -35,13 +35,13 @@ def play_episode():
 
     jump_threshold = np.random.rand()*0.6 + 0.4
 
-    ep_acts = [[], []]
-    ep_obs = [[], []]
+    ep_acts = []
+    ep_obs = []
 
-    prev_on_ground = [one_obs[1] for one_obs in obs]
-    actions = [generate_action(on_ground, jump_threshold) for on_ground in prev_on_ground]
+    prev_on_ground = obs[1]
+    action = generate_action(prev_on_ground, jump_threshold)
 
-    on_ground_total = sum(prev_on_ground)
+    on_ground_total = prev_on_ground
 
     while not done:
         # action1 = np.concatenate((np.random.rand(5)*2 - 1, np.random.randint(0, 2, 3)))
@@ -49,19 +49,18 @@ def play_episode():
 
         # actions = np.asarray([action1, action2])
 
-        obs, _ , done, _ = env.step(actions)
+        obs, _ , done, _ = env.step(action)
 
-        for i in range(2):
-            ep_acts[i].append(actions[i])
-            ep_obs[i].append(obs[i][0])
+        ep_acts.append(action)
+        ep_obs.append(obs[0])
         
-        temp_on_ground = [one_obs[1] for one_obs in obs]
+        temp_on_ground = obs[1]
         
         if temp_on_ground != prev_on_ground or np.random.rand() > 0.95:
-            actions = [generate_action(on_ground, jump_threshold) for on_ground in prev_on_ground]
+            action = generate_action(prev_on_ground, jump_threshold)
             prev_on_ground = temp_on_ground
         
-        on_ground_total += sum(prev_on_ground)
+        on_ground_total += prev_on_ground
         #actions = [add_noise(action) for action in actions]
 
 
@@ -85,13 +84,12 @@ def play_episode():
     return ep_obs, ep_acts
 
 def generate_episodes(count: int):
-    episodes = [None] * count * 2
+    episodes = [None] * count
 
-    for i in range(0, count*2, 2):
+    for i in range(0, count):
         ep_obs, ep_acts = play_episode()
         
-        for j in range(2):
-            episodes[i+j] = Sequence(ep_obs[j], ep_acts[j])
+        episodes[i] = Sequence(ep_obs, ep_acts)
 
     np_ep = np.array(episodes, dtype=object)
     np.savez_compressed('Episode_Data/30_TPS/Semi_Random_Episodes/' + str(round(time())), np_ep)
