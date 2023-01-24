@@ -1,0 +1,1 @@
+{"loss": 15.54744017518105, "accuracy/action": 0.7342093305671398, "accuracy/on_ground": 0.9965977759415542, "accuracy/has_jump": 0.9709226268921233, "accuracy/has_flip": 0.9715839907894163, "_timestamp": 1674580329.2391005, "_runtime": 63.546059370040894, "_step": 0, "_wandb": {"runtime": 73}}
