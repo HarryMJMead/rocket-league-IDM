@@ -2,7 +2,7 @@ import torch
 import numpy as np
 
 from lib.episode import Episode
-from lib.utils import quats_to_rot_mtx
+from lib.utils import quats_to_rot_mtx, corrupted_indices
 
 def just_player(obs: np.ndarray) -> np.ndarray:
     return obs[:, 9:24]
@@ -40,3 +40,12 @@ def add_change(obs, act, act_num, add_data):
     change = (obs[1:] - obs[:-1]) * 100 / np.array([1, 1, 1, 5, 5, 5, 5, 5, 5, 2, 2, 2, 20, 20, 20, 2, 1, 2, 2, 2, 20, 20, 20])
 
     return np.float32(np.concatenate((obs[:-1], change), 1)), act[:-1], act_num[:-1], add_data[:-1]
+
+def corrupt(obs: np.ndarray) -> np.ndarray:
+    corrupted_idx = corrupted_indices(2, obs.shape[0]).astype('int')
+
+    ball = obs[:, 0:9]
+    player = obs[:, 9:24]
+    other = obs[:, 24:39]
+
+    return np.concatenate([ball, player[corrupted_idx[0], 0:13], player[:, 13:15], other[corrupted_idx[1], 0:13], other[:, 13:15]], axis=1)

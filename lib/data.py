@@ -4,11 +4,12 @@ import os
 import numpy as np
 
 from lib.episode import Episode
-from lib.data_modification import just_player, rel_velocity_just_player, remove_on_ground, add_change
+from lib.data_modification import just_player, rel_velocity_just_player, remove_on_ground, add_change, corrupt
+
 
 
 class EpisodeDataset(Dataset):
-    def __init__(self, data_paths, width: int, include_change = False):
+    def __init__(self, data_paths, width: int, include_change = False, corrupt=False):
         self.episodes = []
 
         print('Loading Episode Data')
@@ -19,6 +20,7 @@ class EpisodeDataset(Dataset):
 
         self.width = width
         self.include_change = include_change
+        self.corrupt = corrupt
     
     def __len__(self):
             return len(self.episodes)
@@ -30,6 +32,8 @@ class EpisodeDataset(Dataset):
         obs, act, act_num, add_data = ep.observations, ep. actions, ep.act_nums, ep.add_data
         
         #obs, act, act_num, add_data = remove_on_ground(obs, act, act_num, add_data)
+        if self.corrupt:
+            obs = corrupt(obs)
 
         obs = rel_velocity_just_player(obs)
         if self.include_change:
