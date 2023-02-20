@@ -214,10 +214,14 @@ class FullyConnected3(nn.Module):
               nn.ReLU(),
               nn.Linear(hidden_size, hidden_size),
               nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
+              nn.ReLU(),
               nn.Linear(hidden_size, 3)
         )
         self.steer = nn.Sequential(
               nn.Linear(self.input_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
               nn.ReLU(),
               nn.Linear(hidden_size, hidden_size),
               nn.ReLU(),
@@ -232,10 +236,14 @@ class FullyConnected3(nn.Module):
               nn.ReLU(),
               nn.Linear(hidden_size, hidden_size),
               nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
+              nn.ReLU(),
               nn.Linear(hidden_size, 3)
         )
         self.yaw = nn.Sequential(
               nn.Linear(self.input_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
               nn.ReLU(),
               nn.Linear(hidden_size, hidden_size),
               nn.ReLU(),
@@ -250,10 +258,14 @@ class FullyConnected3(nn.Module):
               nn.ReLU(),
               nn.Linear(hidden_size, hidden_size),
               nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
+              nn.ReLU(),
               nn.Linear(hidden_size, 3)
         )
         self.jump = nn.Sequential(
               nn.Linear(self.input_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
               nn.ReLU(),
               nn.Linear(hidden_size, hidden_size),
               nn.ReLU(),
@@ -268,10 +280,25 @@ class FullyConnected3(nn.Module):
               nn.ReLU(),
               nn.Linear(hidden_size, hidden_size),
               nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
+              nn.ReLU(),
               nn.Linear(hidden_size, 2)
         )
         self.drift = nn.Sequential(
               nn.Linear(self.input_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, 2)
+        )
+        self.on_ground = nn.Sequential(
+              nn.Linear(self.input_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
               nn.ReLU(),
               nn.Linear(hidden_size, hidden_size),
               nn.ReLU(),
@@ -291,5 +318,6 @@ class FullyConnected3(nn.Module):
         jump = F.log_softmax(self.jump(pred), dim=1)
         boost = F.log_softmax(self.boost(pred), dim=1)
         drift = F.log_softmax(self.drift(pred), dim=1)
+        on_ground = F.log_softmax(self.on_ground(pred), dim=1)
         
-        return throttle, steer, pitch, yaw, roll, jump, boost, drift
+        return throttle, steer, pitch, yaw, roll, jump, boost, drift, on_ground
