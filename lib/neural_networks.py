@@ -58,6 +58,11 @@ class FullyConnected(nn.Module):
               nn.ReLU(),
               nn.Linear(hidden_size, 2)
         )
+        self.on_ground = nn.Sequential(
+              nn.Linear(hidden_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, 2)
+        )
 
     def forward(self,seq):
         pred = self.linearNN(seq.view(-1, self.input_size))
@@ -70,8 +75,9 @@ class FullyConnected(nn.Module):
         jump = F.log_softmax(self.jump(pred), dim=1)
         boost = F.log_softmax(self.boost(pred), dim=1)
         drift = F.log_softmax(self.drift(pred), dim=1)
+        on_ground = F.log_softmax(self.on_ground(pred), dim=1)
         
-        return throttle, steer, pitch, yaw, roll, jump, boost, drift
+        return throttle, steer, pitch, yaw, roll, jump, boost, drift, on_ground
 
 
 class ConvNet(nn.Module):
