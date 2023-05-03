@@ -327,3 +327,53 @@ class FullyConnected3(nn.Module):
         on_ground = F.log_softmax(self.on_ground(pred), dim=1)
         
         return throttle, steer, pitch, yaw, roll, jump, boost, drift, on_ground
+
+class FullyConnected_Continuous(nn.Module):
+    def __init__(self, obs_size=21, obs_width=2, hidden_size=256, output_size=5):
+        super().__init__()
+        self.input_size = obs_size*obs_width*2
+
+        self.linearNN = nn.Sequential(
+              nn.Linear(self.input_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, output_size),
+        )
+        
+
+    def forward(self,seq):
+        pred = self.linearNN(seq.view(-1, self.input_size))
+        
+        return pred
+
+class FullyConnected_Continuous_2(nn.Module):
+    def __init__(self, obs_size=21, obs_width=2, hidden_size=256, output_size=5):
+        super().__init__()
+        self.input_size = obs_size*obs_width*2
+
+        self.linearNN = nn.Sequential(
+              nn.Linear(self.input_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, hidden_size),
+              nn.ReLU(),
+              nn.Linear(hidden_size, output_size),
+        )
+        
+
+    def forward(self,seq):
+        pred = self.linearNN(seq.view(-1, self.input_size))
+        pred = torch.tanh(pred) + 1
+        return pred

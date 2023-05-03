@@ -41,6 +41,11 @@ def add_change(obs, act, act_num, add_data):
 
     return np.float32(np.concatenate((obs[:-1], change), 1)), act[:-1], act_num[:-1], add_data[:-1]
 
+def add_change_unmodified(obs, act, act_num, add_data):
+    change = (obs[1:] - obs[:-1]) * 100 / np.array([1, 1, 1, 5, 5, 5, 5, 2, 2, 2, 20, 20, 20, 2, 1])
+
+    return np.float32(np.concatenate((obs[:-1], change), 1)), act[:-1], act_num[:-1], add_data[:-1]
+
 def corrupt(obs: np.ndarray) -> np.ndarray:
     corrupted_idx = corrupted_indices(2, obs.shape[0]).astype('int')
 

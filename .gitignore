@@ -1,3 +1,4 @@
 *.pyc
 wandb/
 trained_networks/
+Dataset Action Summaries/
